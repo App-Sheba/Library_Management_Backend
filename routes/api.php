@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AuthorController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\PublisherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -11,10 +14,18 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    Route::post('/logout', [AuthController::class, 'logout']);
+    //get authenticate user
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     // ✅ Role & Permission CRUD
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('permissions', PermissionController::class);
+
+    Route::apiResource('authors', AuthorController::class);
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('publishers', PublisherController::class);
 
     // ✅ Protected routes by role
     Route::get('/admin/dashboard', function () {
@@ -25,5 +36,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/report', function () {
         return response()->json(['message' => 'You can view report']);
     })->middleware('permission:view-report');
-    
 });
